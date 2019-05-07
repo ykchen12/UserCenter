@@ -1,36 +1,10 @@
-# demo
+# UserCenter
+## download
+git clone https://github.com/ykchen12/UserCenter.git
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
-
-git push --set-upstream origin master
-
-git commit -m 'update'
-
+## update
+git init
+git remote add origin https://github.com/ykchen12/UserCenter.git
 git add -A
+git commit -m "2019.xx.xx.xx.xx"
+git push --set-upstream origin master
