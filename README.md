@@ -12,3 +12,6 @@ git add -A
 git commit -m "2019.xx.xx.xx.xx"
 #
 git push --set-upstream origin master
+
+## run
+pip install -r requirements.txt
