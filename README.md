@@ -15,3 +15,7 @@ git push --set-upstream origin master
 
 ## run
 pip install -r requirements.txt
+
+## django 生成依赖
+
+pip freeze > ./requirements.txt

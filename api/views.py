@@ -1,11 +1,9 @@
 from rest_framework import viewsets
-from api.models import Department, User
-from api.serializers import UserSerializers, DepartSerializers
+from api.models import Dept, User
+from api.serializers import UserSerializers, DeptSerializers
 from django.http import Http404
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Q
 from django.shortcuts import HttpResponse
 from django.http import JsonResponse
 from rest_framework.views import APIView
@@ -23,11 +21,13 @@ class Authentication(BaseAuthentication):
     """
 
     def authenticate(self, request):
+        # 解析请求携带的token
         token = request._request.GET.get("token")
+        # 从数据库中获取
         toke_obj = models.UserToken.objects.filter(token=token).first()
         if not toke_obj:
             raise exceptions.AuthenticationFailed("用户认证失败")
-        return (toke_obj.api, toke_obj)  # 这里返回值一次给request.api,request.auth
+        return toke_obj.api, toke_obj  # 这里返回值一次给request.api,request.auth
 
     def authenticate_header(self, val):
         pass
@@ -56,12 +56,16 @@ class AuthView(APIView):
             pwd = request._request.POST.get("password")
             obj = models.User.objects.get(account=account)
             # obj = models.User.objects.filter(account=account, password=pwd).first()
+            # 用户不存在或用户名密码不一致
             if not obj or decrypt_p(obj.password) != pwd:
                 ret['code'] = 403
                 ret['msg'] = "用户名或密码错误"
             else:
+                # 生成token（将用户名进行md5加密）
                 token = md5(account)
+                # 在数据库中存储token
                 models.UserToken.objects.update_or_create(user=obj, defaults={"token": token})
+                # 封装返回信息 token name account
                 ret['token'] = token
                 ret['username'] = obj.name
                 ret['account'] = obj.account
@@ -73,14 +77,15 @@ class AuthView(APIView):
         return JsonResponse(ret)
 
 
+# ModelViewSet自身提供了六种方法 list create retrieve update partial_update destroy
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializers
 
 
-class DepartViewSet(viewsets.ModelViewSet):
-    queryset = Department.objects.all()
-    serializer_class = DepartSerializers
+class DeptViewSet(viewsets.ModelViewSet):
+    queryset = Dept.objects.all()
+    serializer_class = DeptSerializers
 
 
 '''
@@ -116,10 +121,11 @@ def UserLogin(request):
             return Response(usersar.data)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-class UserOne(APIView):
+
+class UserDetail(APIView):
     def get(self, request, id, format=None):
         try:
-            user = Department.objects.get(num=str(id)).depart_name.all()
+            user = Dept.objects.get(num=str(id)).depart_name.all()
             serializer = UserSerializers(user, many=True)
             return Response(serializer.data)
         except:
@@ -132,10 +138,11 @@ class UserOne(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UserAll(APIView):
+
+class UserList(APIView):
     def get(self, request, format=None):
-        department = User.objects.all()
-        serializer = UserSerializers(department, many=True)
+        dept = User.objects.all()
+        serializer = UserSerializers(dept, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -145,14 +152,15 @@ class UserAll(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class AllDepart(APIView):
+
+class DeptList(APIView):
     def get(self, request, format=None):
-        department = Department.objects.all()
-        serializer = DepartSerializers(department, many=True)
+        dept = Dept.objects.all()
+        serializer = DeptSerializers(dept, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = DepartSerializers(data=request.data)
+        serializer = DeptSerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

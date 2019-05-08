@@ -7,7 +7,8 @@ class MyCors(MiddlewareMixin):
     跨域中间件
     """
 
-    def process_response(self, request, response):
+    @staticmethod
+    def process_response(request, response):
         response['Access-Control-Allow-Origin'] = '*'
         # 如果是简单请求这样即可，但是我们一般方送json格式的数据，还有可能会有其他method,所有还要进一步判断
         if request.method == 'OPTIONS':
@@ -22,7 +23,8 @@ class MyCors(MiddlewareMixin):
 
 
 class CheckToken(MiddlewareMixin):
-    def view_test(self, request, response):
+    @staticmethod
+    def view_test(request, response):
         username = request.POST.get('username')
         token = request.POST.get('token')
         tokens = UserToken.objects.filter(user_id=username).first()

@@ -1,27 +1,29 @@
 from rest_framework import serializers
-from api.models import User, Department
+from api.models import User, Dept
 
 
 class UserSerializers(serializers.ModelSerializer):
     part_name = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
-        fields = ('id', 'account', 'name', 'password', 'email', 'department', 'part_name')
+        model = User  # 定义关联的Model
+        fields = ('id', 'account', 'name', 'password', 'phone', 'email', 'dept', 'part_name')  # 指定返回的fields
 
-    def get_part_name(self, obj):
-        return obj.department.name
+    @staticmethod
+    def get_part_name(obj):
+        return obj.dept.name
 
 
-class DepartSerializers(serializers.ModelSerializer):
+class DeptSerializers(serializers.ModelSerializer):
     children_name = serializers.SerializerMethodField()
 
     class Meta:
-        model = Department
+        model = Dept
         fields = ('id', 'num', 'name', 'children', 'children_name')
 
-    def get_children_name(self, obj):
-        DIST = []
+    @staticmethod
+    def get_children_name(obj):
+        dist = []
         for i in obj.children.all():
-            DIST.append({'id': i.num, 'name': i.name})
-        return DIST
+            dist.append({'id': i.num, 'name': i.name})
+        return dist

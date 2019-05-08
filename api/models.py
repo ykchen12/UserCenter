@@ -2,10 +2,10 @@ from django.db import models
 from api.cryp import encrypt_p
 
 
-class Department(models.Model):
+class Dept(models.Model):
     num = models.CharField(max_length=30, null=True, blank=True)
     name = models.CharField(max_length=30, null=True, blank=True)
-    # super_department = models.ForeignKey('self', related_name='super', on_delete=True, null=True, blank=True)
+    # super_dept = models.ForeignKey('self', related_name='super', on_delete=True, null=True, blank=True)
     children = models.ManyToManyField('self', related_name='child', null=True, blank=True, default=None)
 
     def __str__(self):
@@ -17,8 +17,9 @@ class User(models.Model):
     account = models.CharField(max_length=30, null=True, blank=True)  # 员工账号
     name = models.CharField(max_length=30, null=True, blank=True)  # 员工姓名
     password = models.CharField(max_length=255, null=True, blank=True)  # 员工密码
+    phone = models.CharField(max_length=255, null=True, blank=True)  # 员工手机号
     email = models.EmailField(max_length=255, null=True, blank=True)  # 员工邮箱
-    department = models.ForeignKey(Department, related_name='depart_name', on_delete=True, null=True, blank=True)
+    dept = models.ForeignKey(Dept, related_name='depart_name', on_delete=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if self.password:
