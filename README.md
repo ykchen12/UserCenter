@@ -19,3 +19,5 @@ pip install -r requirements.txt
 ## django 生成依赖
 
 pip freeze > ./requirements.txt
+
+## jenkins
