@@ -22,6 +22,7 @@ class MyCors(MiddlewareMixin):
         return response
 
 
+# 检测token
 class CheckToken(MiddlewareMixin):
     @staticmethod
     def view_test(request, response):
