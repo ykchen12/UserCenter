@@ -31,7 +31,7 @@ django-mama-cas==2.4.0
 django-redis-cache==1.7.1
 django-stubs==0.12.1
 django-timezone-field==3.0
-djangorestframework==3.9.0
+djangorestframework==3.11.2
 djangorestframework-jwt==1.11.0
 djangorestframework-stubs==0.4.2
 et-xmlfile==1.0.1
